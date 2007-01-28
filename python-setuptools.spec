@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           python-setuptools
-Version:        0.6c3
+Version:        0.6c5
 Release:        1%{?dist}
 Summary:        Download, build, install, upgrade, and uninstall Python packages
 
@@ -55,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 28 2007 Konstantin Ryabitsev <icon@fedoraproject.org> - 0.6c5-1
+- Upstream 0.6c5 (known bugs, but the promised 0.6c6 is taking too long)
+
 * Tue Dec 05 2006 Konstantin Ryabitsev <icon@fedoraproject.org> - 0.6c3-1
 - Upstream 0.6c3 (#218540, thanks to Michel Alexandre Salim for the patch)
 
