@@ -1,12 +1,12 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:           python-setuptools
-Version:        0.6c6
+Version:        0.6c7
 Release:        1%{?dist}
 Summary:        Download, build, install, upgrade, and uninstall Python packages
 
 Group:          Development/Languages
-License:        PSFL/ZPL
+License:        Python or ZPLv2.0
 URL:            http://peak.telecommunity.com/DevCenter/setuptools
 Source0:        http://cheeseshop.python.org/packages/source/s/setuptools/setuptools-%{version}.tar.gz
 Source1:        psfl.txt
@@ -17,6 +17,8 @@ BuildArch:      noarch
 BuildRequires:  python-devel
 
 Requires:       python-devel
+
+Provides:       python-setuptools-devel
 
 %description
 setuptools is a collection of enhancements to the Python distutils that allow
@@ -57,6 +59,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 14 2007 Konstantin Ryabitsev <icon@fedoraproject.org> - 0.6c7-1
+- Upstream 0.6c7
+- Provide python-setuptools-devel to make packagers' lives easier
+
 * Sun Jun 10 2007 Konstantin Ryabitsev <icon@fedoraproject.org> - 0.6c6-1
 - Upstream 0.6c6
 - Require python-devel (#240707)
