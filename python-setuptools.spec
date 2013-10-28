@@ -8,7 +8,7 @@
 
 Name:           python-setuptools
 Version:        0.9.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -20,10 +20,16 @@ Source2:        zpl.txt
 # Submitted upstream
 # https://bitbucket.org/tarek/distribute/issue/363/skip-test_sdist_with_utf8_encoded_filename
 Patch0: distribute-skip-sdist_with_utf8_encoded_filename.patch
+# https://github.com/jaraco/setuptools/pull/2
+# Fixes security issue: http://bugs.python.org/issue17997#msg194950
+Patch1: setuptools-ssl-match_hostname-wildcard.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
+# Require this so that we use a system copy of the match_hostname() function
+Requires: python-backports-ssl_match_hostname
+BuildRequires: python-backports-ssl_match_hostname
 BuildRequires:  python2-devel
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -53,6 +59,10 @@ execute the software that requires pkg_resources.py.
 Summary:        Easily build and distribute Python 3 packages
 Group:          Applications/System
 
+# Note: Do not need to Require python3-backports-ssl_match_hostname because it
+# has been present since python3-3.2.  We do not ship python3-3.0 or
+# python3-3.1 anywhere
+
 %description -n python3-setuptools
 Setuptools is a collection of enhancements to the Python 3 distutils that allow
 you to more easily build and distribute Python 3 packages, especially ones that
@@ -67,6 +77,7 @@ execute the software that requires pkg_resources.py.
 %setup -q -n %{srcname}-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 find -name '*.txt' -exec chmod -x \{\} \;
 find . -name '*.orig' -exec rm \{\} \;
@@ -150,6 +161,9 @@ rm -rf %{buildroot}
 %endif # with_python3
 
 %changelog
+* Mon Oct 28 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 0.9.8-2
+- Pull in a fix for a security issue with wildcard certs and IDNA domain names
+
 * Sat Oct 26 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 0.9.8-1
 - Upstream update with a few bugfixes
 
@@ -268,10 +282,10 @@ rm -rf %{buildroot}
 * Thu Feb 04 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-3
 - First build with python3 support enabled.
   
-* Thu Jan 29 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-2
+* Fri Jan 29 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-2
 - Really disable the python3 portion
 
-* Thu Jan 29 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-1
+* Fri Jan 29 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-1
 - Update the python3 portions but disable for now.
 - Update to 0.6.10
 - Remove %%pre scriptlet as the file has a different name than the old
@@ -282,7 +296,7 @@ rm -rf %{buildroot}
 - Don't need python3-tools since the library is now in the python3 package
 - Few other changes to cleanup style
 
-* Thu Jan 22 2010 David Malcolm <dmalcolm@redhat.com> - 0.6.9-2
+* Fri Jan 22 2010 David Malcolm <dmalcolm@redhat.com> - 0.6.9-2
 - add python3 subpackage
 
 * Mon Dec 14 2009 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.9-1
