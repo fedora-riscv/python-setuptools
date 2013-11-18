@@ -7,7 +7,7 @@
 %global srcname setuptools
 
 Name:           python-setuptools
-Version:        1.3.1
+Version:        1.4
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 
@@ -17,13 +17,6 @@ URL:            http://pypi.python.org/pypi/%{srcname}
 Source0:        http://pypi.python.org/packages/source/s/%{srcname}/%{srcname}-%{version}.tar.gz
 Source1:        psfl.txt
 Source2:        zpl.txt
-# Test data for the svn unittests from
-# https://bitbucket.org/pypa/setuptools/src/ca2fc862ded7e3a2c07397f0d7d929a9534493a7/setuptools/tests/svn_data/svn17_example.zip?at=default
-# Pull Request to add this to the next upstream release here: 
-# https://github.com/jaraco/setuptools/pull/4
-Source3:        svn17_example.zip
-# https://bitbucket.org/pypa/setuptools/src/ca2fc862ded7e3a2c07397f0d7d929a9534493a7/setuptools/tests/svn_data/svn18_example.zip?at=default
-Source4:        svn18_example.zip
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -83,10 +76,6 @@ execute the software that requires pkg_resources.py.
 
 find -name '*.txt' -exec chmod -x \{\} \;
 find . -name '*.orig' -exec rm \{\} \;
-
-# For unittests
-cp %{SOURCE3} setuptools/tests/svn_data/
-cp %{SOURCE4} setuptools/tests/svn_data/
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -168,6 +157,9 @@ rm -rf %{buildroot}
 %endif # with_python3
 
 %changelog
+* Mon Nov 18 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 1.4-1
+- Update to 1.4 that gives easy_install pypi credential handling
+
 * Thu Nov  7 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 1.3.1-1
 - Minor upstream update to reign in overzealous warnings
 
