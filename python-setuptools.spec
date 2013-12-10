@@ -7,7 +7,7 @@
 %global srcname distribute
 
 Name:           python-setuptools
-Version:        0.6.36
+Version:        0.6.49
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 
@@ -67,7 +67,7 @@ This package contains the distribute fork of setuptools.
 
 %patch0 -p1
 
-find -name '*.txt' | xargs chmod -x
+find -name '*.txt' -exec chmod -x \{\} \;
 find . -name '*.orig' -exec rm \{\} \;
 
 %if 0%{?with_python3}
@@ -149,6 +149,9 @@ rm -rf %{buildroot}
 %endif # with_python3
 
 %changelog
+* Mon Dec  9 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.49-1
+- Upstream update to fix CVE-2013-2215
+
 * Thu Apr 11 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.36-1
 - Update to upstream 0.6.36.  Many bugfixes
 
