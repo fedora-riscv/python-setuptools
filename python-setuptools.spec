@@ -4,19 +4,19 @@
 
 %global srcname setuptools
 %if 0%{?build_wheel}
-%global python3_wheelname %{srcname}-%{version}-py2.py3-none-any.whl
-%global python3_record %{python35_sitelib}/%{srcname}-%{version}.dist-info/RECORD
+%global python3_wheelname %{srcname}-*-py2.py3-none-any.whl
+%global python3_record %{python35_sitelib}/%{srcname}-*.dist-info/RECORD
 %endif
 
 Name:           python35-setuptools
-Version:        2.0
-Release:        6%{?dist}
+Version:        4.2
+Release:        0.1.20140607hgd5b699a1068f%{?dist}
 Summary:        Easily build and distribute Python 3 packages
 
 Group:          Applications/System
 License:        Python or ZPLv2.0
 URL:            http://pypi.python.org/pypi/%{srcname}
-Source0:        http://pypi.python.org/packages/source/s/%{srcname}/%{srcname}-%{version}.tar.gz
+Source0:        python3-nightly-setuptools-d5b699a1068f.tar
 Source1:        psfl.txt
 Source2:        zpl.txt
 
@@ -41,7 +41,7 @@ This package also contains the runtime components of setuptools, necessary to
 execute the software that requires pkg_resources.py.
 
 %prep
-%setup -q -n %{srcname}-%{version}
+%setup -q -n python3-nightly-%{srcname}
 
 find -name '*.txt' -exec chmod -x \{\} \;
 find . -name '*.orig' -exec rm \{\} \;
@@ -97,6 +97,9 @@ rm -rf %{buildroot}
 %{_bindir}/easy_install-3.*
 
 %changelog
+* Sat Jun 07 2014 Miro Hrončok <mhroncok@redhat.com> - 4.2-0.1.20140607hgd5b699a1068f
+- Update to hg: d5b699a1068f
+
 * Sat Jun 07 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-6
 - Bootstraping
 
@@ -250,7 +253,7 @@ rm -rf %{buildroot}
 
 * Thu Feb 04 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-3
 - First build with python3 support enabled.
-  
+
 * Fri Jan 29 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-2
 - Really disable the python3 portion
 
