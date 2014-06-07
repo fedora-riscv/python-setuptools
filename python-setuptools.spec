@@ -1,6 +1,6 @@
 # This controls whether setuptools is build as a wheel or not,
 # simplifying Python 3.4 bootstraping process
-%global build_wheel 0
+%global build_wheel 1
 
 %global srcname setuptools
 %if 0%{?build_wheel}
@@ -10,7 +10,7 @@
 
 Name:           python35-setuptools
 Version:        2.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Easily build and distribute Python 3 packages
 
 Group:          Applications/System
@@ -61,7 +61,7 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python35} setup.py build
 rm -rf %{buildroot}
 
 %if 0%{?build_wheel}
-pip3 install -I dist/%{python3_wheelname} --root %{buildroot} --strip-file-prefix %{buildroot}
+pip3.5 install -I dist/%{python3_wheelname} --root %{buildroot} --strip-file-prefix %{buildroot}
 
 # TODO: we have to remove this by hand now, but it'd be nice if we wouldn't have to
 # (pip install wheel doesn't overwrite)
@@ -77,9 +77,11 @@ rm -rf %{buildroot}%{python35_sitelib}/setuptools/tests
 sed -i '/^setuptools\/tests\//d' %{buildroot}%{python3_record}
 %endif
 
-install -p -m 0644 %{SOURCE1} %{SOURCE2} %{py3dir}
+install -p -m 0644 %{SOURCE1} %{SOURCE2} .
 find %{buildroot}%{python35_sitelib} -name '*.exe' | xargs rm -f
 chmod +x %{buildroot}%{python35_sitelib}/setuptools/command/easy_install.py
+
+rm -f %{buildroot}%{_bindir}/easy_install
 
 %check
 %{__python35} setup.py test
@@ -95,6 +97,9 @@ rm -rf %{buildroot}
 %{_bindir}/easy_install-3.*
 
 %changelog
+* Sat Jun 07 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-6
+- Bootstraping
+
 * Sat Jun 07 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-5
 - Keep this only for Python 3.5
 
