@@ -2,6 +2,8 @@
 %global with_python2 0
 %global with_python3 1
 
+%{?scl:%global py3dir %{_builddir}/python3-%{name}-%{version}-%{release}}
+
 # This controls whether setuptools is build as a wheel or not,
 # simplifying Python 3.4 bootstraping process
 %global build_wheel 0
@@ -170,7 +172,6 @@ rm -rf %{buildroot}%{python3_sitelib}/setuptools/tests
 sed -i '/^setuptools\/tests\//d' %{buildroot}%{python3_record}
 %endif
 
-install -p -m 0644 %{SOURCE1} %{SOURCE2} %{py3dir}
 find %{buildroot}%{python3_sitelib} -name '*.exe' | xargs rm -f
 chmod +x %{buildroot}%{python3_sitelib}/setuptools/command/easy_install.py
 popd
@@ -188,10 +189,11 @@ rm -rf %{buildroot}%{python_sitelib}/setuptools/tests
 sed -i '/^setuptools\/tests\//d' %{buildroot}%{python2_record}
 %endif
 
-install -p -m 0644 %{SOURCE1} %{SOURCE2} .
 find %{buildroot}%{python_sitelib} -name '*.exe' | xargs rm -f
 chmod +x %{buildroot}%{python_sitelib}/setuptools/command/easy_install.py
 %endif # with_python2
+
+install -p -m 0644 %{SOURCE1} %{SOURCE2} .
 %{?scl:EOF}
 
 %check
@@ -223,8 +225,13 @@ rm -rf %{buildroot}
 %if 0%{?with_python3}
 %files -n %{?scl_prefix}python3-setuptools
 %defattr(-,root,root,-)
-%doc psfl.txt zpl.txt docs
+%doc *.txt docs
 %{python3_sitelib}/*
+
+%if ! 0%{?with_python2}
+%{_bindir}/easy_install
+%endif # !with_python2
+
 %{_bindir}/easy_install-3.*
 %endif # with_python3
 
