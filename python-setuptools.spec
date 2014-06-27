@@ -6,7 +6,7 @@
 
 # This controls whether setuptools is build as a wheel or not,
 # simplifying Python 3.4 bootstraping process
-%global build_wheel 0
+%global build_wheel 1
 %else
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print (get_python_lib())")}
 %endif
@@ -26,7 +26,7 @@
 
 Name:           %{?scl_prefix}python-setuptools
 Version:        2.0
-Release:        0.5.20140625hgb54ae9c52355%{?dist}
+Release:        0.6.20140625hgb54ae9c52355%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -158,9 +158,11 @@ pushd %{py3dir}
 %if 0%{?build_wheel}
 pip3 install -I dist/%{python3_wheelname} --root %{buildroot} --strip-file-prefix %{buildroot}
 
+%if 0%{?with_python2}
 # TODO: we have to remove this by hand now, but it'd be nice if we wouldn't have to
 # (pip install wheel doesn't overwrite)
 rm %{buildroot}%{_bindir}/easy_install
+%endif # with_python2
 
 sed -i '/\/usr\/bin\/easy_install,/d' %{buildroot}%{python3_record}
 %else
@@ -236,6 +238,9 @@ rm -rf %{buildroot}
 %endif # with_python3
 
 %changelog
+* Fri Jun 27 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-0.6.20140625hgb54ae9c52355
+- Bootstrapping
+
 * Wed Jun 25 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-0.5.20140625hgb54ae9c52355
 - Update to hg: b54ae9c52355
 
