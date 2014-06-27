@@ -26,7 +26,7 @@
 
 Name:           %{?scl_prefix}python-setuptools
 Version:        2.0
-Release:        5.20140625hgb54ae9c52355%{?dist}
+Release:        0.5.20140625hgb54ae9c52355%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -236,7 +236,7 @@ rm -rf %{buildroot}
 %endif # with_python3
 
 %changelog
-* Wed Jun 25 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-5.20140625hgb54ae9c52355
+* Wed Jun 25 2014 Miro Hrončok <mhroncok@redhat.com> - 2.0-0.5.20140625hgb54ae9c52355
 - Update to hg: b54ae9c52355
 
 * Fri Apr 25 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.0-4
