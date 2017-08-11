@@ -1,7 +1,7 @@
 %global srcname setuptools
 
 %bcond_with bootstrap
-%bcond_without check
+%bcond_with tests
 
 %bcond_without python2
 %bcond_without python3
@@ -48,19 +48,19 @@ BuildRequires:  python2-devel
 BuildRequires:  python2-pip
 BuildRequires:  python2-wheel
 %endif # without bootstrap
-%if %{with check}
+%if %{with test}
 BuildRequires:  python2-pytest
 BuildRequires:  python2-mock
 BuildRequires:  python2-backports-unittest_mock
-%endif # with check
+%endif # with tests
 %endif # with python2
 
 %if %{with python3}
 BuildRequires:  python3-devel
-%if %{with check}
+%if %{with tests}
 BuildRequires:  python3-pytest
 BuildRequires:  python3-mock
-%endif # with check
+%endif # with tests
 %if %{without bootstrap}
 BuildRequires:  python3-pip
 BuildRequires:  python3-wheel
@@ -203,7 +203,7 @@ find %{buildroot}%{python2_sitelib} -name '*.exe' | xargs rm -f
 rm -r docs/{Makefile,conf.py,_*}
 
 
-%if %{with check}
+%if %{with tests}
 %check
 %if %{with python2}
 #LANG=en_US.utf8 PYTHONPATH=$(pwd) py.test
@@ -212,7 +212,7 @@ rm -r docs/{Makefile,conf.py,_*}
 %if %{with python3}
 LANG=en_US.utf8 PYTHONPATH=$(pwd) py.test-%{python3_version}
 %endif # with python3
-%endif # with check
+%endif # with tests
 
 
 %if %{with python2}
