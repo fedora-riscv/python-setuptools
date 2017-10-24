@@ -8,7 +8,7 @@
 
 %bcond_without python2
 %bcond_without python3
-%bcond_without platform_python
+%bcond_with platform_python
 
 %if ! 0%{?fedora}
 # disable Python 3 if not Fedora
@@ -32,7 +32,7 @@
 
 Name:           python-setuptools
 Version:        36.2.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -61,25 +61,21 @@ BuildRequires:  python2-backports-unittest_mock
 %endif # with python2
 
 %if %{with python3}
-BuildRequires:  python3-devel
+BuildRequires:  python%{python3_pkgversion}-devel
 %if %{with tests}
-BuildRequires:  python3-pip
-BuildRequires:  python3-pytest
-BuildRequires:  python3-mock
+%if %{without platform_python}
+BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-mock
+%endif # without platform_python
+BuildRequires:  python%{python3_pkgversion}-pytest
 %endif # with tests
 %if %{without bootstrap}
-BuildRequires:  python3-pip
-BuildRequires:  python3-wheel
+%if %{without platform_python}
+BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-wheel
+%endif # without platform_python
 %endif # without bootstrap
 %endif # with python3
-
-%if %{with platform_python}
-BuildRequires:  platform-python-devel
-BuildRequires:  platform-python-libs-devel
-%if %{with tests}
-BuildRequires:  platform-python-pytest
-%endif # with tests
-%endif # with platform_python
 
 # We're now back to setuptools as the package.
 # Keep the python-distribute name active for a few releases.  Eventually we'll
@@ -113,12 +109,11 @@ execute the software that requires pkg_resources.py.
 
 
 %if %{with python3}
-%package -n python3-setuptools
+%package -n python%{python3_pkgversion}-setuptools
 Summary:        Easily build and distribute Python 3 packages
 Group:          Applications/System
-%{?python_provide:%python_provide python3-setuptools}
 
-%description -n python3-setuptools
+%description -n python%{python3_pkgversion}-setuptools
 Setuptools is a collection of enhancements to the Python 3 distutils that allow
 you to more easily build and distribute Python 3 packages, especially ones that
 have dependencies on other packages.
@@ -130,11 +125,13 @@ execute the software that requires pkg_resources.py.
 
 
 %if %{with platform_python}
-%package -n platform-python-setuptools
+%package -n python3-setuptools
 Summary:        Easily build and distribute Python 3 packages
 Group:          Applications/System
+Requires:       python%{python3_pkgversion}-setuptools = %{version}
+%{?python_provide:%python_provide python%{python3_pkgversion}-setuptools}
 
-%description -n platform-python-setuptools
+%description -n python3-setuptools
 Setuptools is a collection of enhancements to the Python 3 distutils that allow
 you to more easily build and distribute Python 3 packages, especially ones that
 have dependencies on other packages.
@@ -187,28 +184,11 @@ rm setuptools/tests/test_integration.py
 %endif
 %endif # with python3
 
-%if %{with platform_python}
-# Platform Python build does not need to build the wheel
-%platform_py_build
-%endif # with platform_python
-
 
 %install
-# Must do the platform-python and python3 install first because the scripts in
-# /usr/bin are overwritten with every setup.py install (and we want the python2
-# version to be the default for now).
-%if %{with platform_python}
-%platform_py_install
-
-# Delete all executables under /usr/bin, we don't want them for platform-python
-rm %{buildroot}%{_bindir}/*
-
-rm -rf %{buildroot}%{platform_python_sitelib}/setuptools/tests
-
-find %{buildroot}%{platform_python_sitelib} -name '*.exe' | xargs rm -f
-%endif # with platform_python
-
-
+# Must do the python3 install first because the scripts in /usr/bin are
+# overwritten with every setup.py install (and we want the python2 version to
+# be the default for now).
 %if %{with python3}
 %if %{without bootstrap}
 %py3_install_wheel %{python3_wheelname}
@@ -277,28 +257,30 @@ LANG=en_US.utf8 PYTHONPATH=$(pwd) %{__platform_python} -m pytest
 %endif # with python2
 
 %if %{with python3}
-%files -n python3-setuptools
+%files -n python%{python3_pkgversion}-setuptools
 %license LICENSE
 %doc docs/* CHANGES.rst README.rst
 %{python3_sitelib}/easy_install.py
 %{python3_sitelib}/pkg_resources/
 %{python3_sitelib}/setuptools*/
 %{python3_sitelib}/__pycache__/*
+%if %{without platform_python}
 %{_bindir}/easy_install-3.*
+%endif # with platform_python
 %endif # with python3
 
 %if %{with platform_python}
-%files -n platform-python-setuptools
+%files -n python3-setuptools
 %license LICENSE
 %doc docs/* CHANGES.rst README.rst
-%{platform_python_sitelib}/easy_install.py
-%{platform_python_sitelib}/pkg_resources/
-%{platform_python_sitelib}/setuptools*/
-%{platform_python_sitelib}/__pycache__/*
+%{_bindir}/easy_install-3.*
 %endif # with platform_python
 
 
 %changelog
+* Tue Oct 24 2017 Tomas Orsava <torsava@redhat.com> - 36.2.0-8
+- Switch to a new implementation of Platform-Python
+
 * Sun Aug 20 2017 Tomas Orsava <torsava@redhat.com> - 36.2.0-7
 - Re-enable tests to finish bootstrapping the platform-python stack
   (https://fedoraproject.org/wiki/Changes/Platform_Python_Stack)
