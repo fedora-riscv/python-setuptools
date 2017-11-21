@@ -31,8 +31,8 @@
 %endif
 
 Name:           python-setuptools
-Version:        36.2.0
-Release:        7%{?dist}
+Version:        36.5.0
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -52,11 +52,13 @@ BuildRequires:  python2-devel
 BuildRequires:  python2-pip
 BuildRequires:  python2-wheel
 %endif # without bootstrap
-%if %{with test}
+%if %{with tests}
 BuildRequires:  python2-pip
 BuildRequires:  python2-pytest
 BuildRequires:  python2-mock
 BuildRequires:  python2-backports-unittest_mock
+BuildRequires:  python2-pytest-fixture-config
+BuildRequires:  python2-pytest-virtualenv
 %endif # with tests
 %endif # with python2
 
@@ -66,6 +68,8 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-pip
 BuildRequires:  python3-pytest
 BuildRequires:  python3-mock
+BuildRequires:  python3-pytest-fixture-config
+BuildRequires:  python3-pytest-virtualenv
 %endif # with tests
 %if %{without bootstrap}
 BuildRequires:  python3-pip
@@ -254,11 +258,12 @@ rm -r docs/{Makefile,conf.py,_*}
 %if %{with tests}
 %check
 %if %{with python2}
-#LANG=en_US.utf8 PYTHONPATH=$(pwd) py.test
+# see https://github.com/pypa/setuptools/issues/1170 for PYTHONDONTWRITEBYTECODE
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) py.test-%{python2_version}
 %endif # with python2
 
 %if %{with python3}
-LANG=en_US.utf8 PYTHONPATH=$(pwd) py.test-%{python3_version}
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) py.test-%{python3_version}
 %endif # with python3
 
 %if %{with platform_python}
@@ -299,6 +304,9 @@ LANG=en_US.utf8 PYTHONPATH=$(pwd) %{__platform_python} -m pytest
 
 
 %changelog
+* Tue Nov 21 2017 Miro Hrončok <mhroncok@redhat.com> - 36.5.0-1
+- Update to 36.5.0 (related to #1474126)
+
 * Sun Aug 20 2017 Tomas Orsava <torsava@redhat.com> - 36.2.0-7
 - Re-enable tests to finish bootstrapping the platform-python stack
   (https://fedoraproject.org/wiki/Changes/Platform_Python_Stack)
