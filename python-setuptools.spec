@@ -19,7 +19,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        40.8.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # packaging is BSD or ASL 2.0
@@ -34,6 +34,10 @@ Source0:        %{pypi_source %{srcname} %{version} zip}
 # We need to create it if it doesn't exist
 # https://bugzilla.redhat.com/show_bug.cgi?id=1576924
 Patch0:         create-site-packages.patch
+
+# Make setuptools compatible with Python 3.9, backported from setuptools 41.1+
+# https://github.com/pypa/setuptools/pull/1788
+Patch1:         python39.patch
 
 BuildArch:      noarch
 
@@ -255,6 +259,9 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) py.test-%{python3_version} --ignore=
 
 
 %changelog
+* Tue Nov 26 2019 Miro Hrončok <mhroncok@redhat.com> - 40.8.0-2
+- Make python-setuptools-wheel work with Python 3.9
+
 * Tue Feb 05 2019 Miro Hrončok <mhroncok@redhat.com>
 - Update to 40.8.0 (#1672756)
 - https://github.com/pypa/setuptools/blob/v40.8.0/CHANGES.rst

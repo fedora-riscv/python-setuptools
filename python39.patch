@@ -1,0 +1,26 @@
+From 53b8db359378f436bfd88f90a90aaf01b650d3a6 Mon Sep 17 00:00:00 2001
+From: Inada Naoki <songofacandy@gmail.com>
+Date: Tue, 18 Jun 2019 16:15:25 +0900
+Subject: [PATCH] Stop using deprecated HTMLParser.unescape
+
+HTMLParser.unescape is accessed even when unused - this will cause an
+exception when `HTMLParser.unescape` is removed in Python 3.9.
+---
+ setuptools/py33compat.py    | 6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+ create mode 100644 changelog.d/1788.change.rst
+
+diff --git a/setuptools/py33compat.py b/setuptools/py33compat.py
+index 87cf53983..cb6944363 100644
+--- a/setuptools/py33compat.py
++++ b/setuptools/py33compat.py
+@@ -52,4 +52,8 @@ def __iter__(self):
+ Bytecode = getattr(dis, 'Bytecode', Bytecode_compat)
+ 
+ 
+-unescape = getattr(html, 'unescape', html_parser.HTMLParser().unescape)
++unescape = getattr(html, 'unescape', None)
++if unescape is None:
++    # HTMLParser.unescape is deprecated since Python 3.4, and will be removed
++    # from 3.9.
++    unescape = html_parser.HTMLParser().unescape
