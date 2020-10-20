@@ -17,7 +17,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        50.3.1
+Version:        50.3.2
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -142,7 +142,7 @@ sed -i '/^setuptools\/tests\//d' %{buildroot}%{python3_record}
 find %{buildroot}%{python3_sitelib} -name '*.exe' | xargs rm -f
 
 # Don't ship these
-rm -r docs/{Makefile,conf.py,_*}
+rm -r docs/{conf.py,_*}
 
 %if %{without bootstrap}
 mkdir -p %{buildroot}%{python_wheeldir}
@@ -189,8 +189,8 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
-* Thu Oct 15 2020 Tomas Hrnciar <thrnciar@redhat.com> - 50.3.1-1
-- Update to 50.3.1 (#1888486)
+* Tue Oct 20 2020 Tomas Hrnciar <thrnciar@redhat.com> - 50.3.2-1
+- Update to 50.3.2 (#1889093)
 
 * Fri Sep 04 2020 Tomas Hrnciar <thrnciar@redhat.com> - 50.1.0-1
 - Update to 50.1.0 (#1873889)
