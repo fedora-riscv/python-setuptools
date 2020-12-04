@@ -1,9 +1,20 @@
 %global srcname setuptools
 
+# The original RHEL 9 content set is defined by (build)dependencies
+# of the packages in Fedora ELN. Hence we disable tests here
+# to prevent pulling many unwanted packages in.
+# Once the RHEL 9 content set is defined and/or RHEL 9 forks from ELN,
+# the conditional can be removed from the Fedora spec file.
+# We intentionally keep this enabled on EPEL.
+%if 0%{?rhel} >= 9 && !0%{?epel}
+%bcond_with tests
+%else
+%bcond_without tests
+%endif
+
 #  WARNING  When bootstrapping, disable tests as well,
 #           because tests need pip.
 %bcond_with bootstrap
-%bcond_without tests
 # Similar to what we have in pythonX.Y.spec files.
 # If enabled, provides unversioned executables and other stuff.
 # Disable it if you build this package in an alternative stack.
@@ -18,7 +29,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        50.3.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -189,6 +200,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Fri Dec  4 2020 Miro Hrončok <mhroncok@redhat.com> - 50.3.2-2
+- Disable tests in Fedora ELN (and RHEL)
+
 * Tue Oct 20 2020 Tomas Hrnciar <thrnciar@redhat.com> - 50.3.2-1
 - Update to 50.3.2 (#1889093)
 
