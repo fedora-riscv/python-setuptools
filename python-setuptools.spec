@@ -44,10 +44,9 @@ Source0:        %{pypi_source %{srcname} %{version} zip}
 
 BuildArch:      noarch
 
-BuildRequires:  gcc
-
 BuildRequires:  python%{python3_pkgversion}-devel
 %if %{with tests}
+BuildRequires:  gcc
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-mock
