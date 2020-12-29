@@ -28,8 +28,8 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        50.3.2
-Release:        2%{?dist}
+Version:        51.1.1
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -40,7 +40,7 @@ Summary:        Easily build and distribute Python packages
 # see https://github.com/pypa/setuptools/issues/2227
 License:        MIT and (BSD or ASL 2.0)
 URL:            https://pypi.python.org/pypi/%{srcname}
-Source0:        %{pypi_source %{srcname} %{version} zip}
+Source0:        %{pypi_source %{srcname} %{version}}
 
 BuildArch:      noarch
 
@@ -199,6 +199,11 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Tue Dec 29 2020 Miro Hrončok <mhroncok@redhat.com> - 51.1.1-1
+- Update to 51.1.1
+- Fixes test failures with pip 20.3 as well as with pytest 6.2+
+- Fixes: rhbz#1909575
+
 * Fri Dec  4 2020 Miro Hrončok <mhroncok@redhat.com> - 50.3.2-2
 - Disable tests in Fedora ELN (and RHEL)
 
