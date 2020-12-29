@@ -85,7 +85,7 @@ Summary:        Easily build and distribute Python 3 packages
 %{bundled}
 
 %if %{with bootstrap}
-Provides:       python3dist(setuptools) = %{version}
+Provides:       python%{python3_pkgversion}dist(setuptools) = %{version}
 Provides:       python%{python3_version}dist(setuptools) = %{version}
 %endif
 
