@@ -28,6 +28,9 @@
     - smoke39:
         dir: python/smoke
         run: VERSION=3.9 ./venv.sh
+    - smoke310:
+        dir: python/smoke
+        run: VERSION=3.10 ./venv.sh
     - smoke27:
         dir: python/smoke
         run: VERSION=2.7 METHOD=virtualenv ./venv.sh
@@ -49,6 +52,9 @@
     - smoke39_virtualenv:
         dir: python/smoke
         run: VERSION=3.9 METHOD=virtualenv ./venv.sh
+    - smoke310_virtualenv:
+        dir: python/smoke
+        run: VERSION=3.10 METHOD=virtualenv ./venv.sh
     - pyproject_pytest:
         dir: pyproject-rpm-macros/tests
         run: ./mocktest.sh python-pytest
@@ -58,12 +64,13 @@
     required_packages:
     - gcc
     - virtualenv
-    - python27
-    - python35
-    - python36
-    - python37
-    - python38
-    - python39
+    - python2.7
+    - python3.5
+    - python3.6
+    - python3.7
+    - python3.8
+    - python3.9
+    - python3.10
     - python3-devel
     - python3-tox
     - mock
