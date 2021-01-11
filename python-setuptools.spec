@@ -28,7 +28,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        51.1.1
+Version:        51.1.2
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -168,6 +168,10 @@ rm %{buildroot}%{_bindir}/easy_install
 # Verify bundled provides are up to date
 %{_rpmconfigdir}/pythonbundles.py pkg_resources/_vendor/vendored.txt --compare-with '%{bundled}'
 
+# Regression test, the wheel should not be larger than 600 KiB
+# https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
+test $(du dist/%{python_wheelname} | cut -f1) -lt 600
+
 # Upstream tests
 # --ignore=pavement.py:
 #   pavement.py is only used by upstream to do releases and vendoring, we don't ship it
@@ -199,6 +203,12 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Mon Jan 11 2021 Miro Hrončok <mhroncok@redhat.com> - 51.1.2-1
+- Update to 51.1.2
+- Removes tests from the wheel
+- https://setuptools.readthedocs.io/en/latest/history.html#v51-1-2
+- Fixes: rhbz#1914481
+
 * Tue Dec 29 2020 Miro Hrončok <mhroncok@redhat.com> - 51.1.1-1
 - Update to 51.1.1
 - Fixes test failures with pip 20.3 as well as with pytest 6.2+
