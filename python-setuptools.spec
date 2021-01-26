@@ -28,7 +28,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        51.1.2
+Version:        52.0.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -182,16 +182,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 %files -n python%{python3_pkgversion}-setuptools
 %license LICENSE
 %doc docs/* CHANGES.rst README.rst
-%{python3_sitelib}/easy_install.py
 %{python3_sitelib}/pkg_resources/
 %{python3_sitelib}/setuptools*/
 %{python3_sitelib}/_distutils_hack/
 %{python3_sitelib}/distutils-precedence.pth
-%{python3_sitelib}/__pycache__/*
-%if %{with main_python}
-%{_bindir}/easy_install
-%endif
-%{_bindir}/easy_install-3.*
 
 %if %{without bootstrap}
 %files wheel
@@ -203,6 +197,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Tue Jan 26 2021 Lumír Balhar <lbalhar@redhat.com> - 52.0.0-1
+- Update to 52.0.0 (#1917060)
+- Removes easy_install module and executable
+
 * Mon Jan 11 2021 Miro Hrončok <mhroncok@redhat.com> - 51.1.2-1
 - Update to 51.1.2
 - Removes tests from the wheel
