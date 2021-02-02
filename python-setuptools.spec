@@ -28,7 +28,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        52.0.0
+Version:        53.0.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -57,6 +57,7 @@ BuildRequires:  python%{python3_pkgversion}-jaraco-envs
 %if %{without bootstrap}
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 # python3 bootstrap: this is built before the final build of python3, which
 # adds the dependency on python3-rpm-generators, so we require it manually
 # The minimal version is for bundled provides verification script
@@ -110,7 +111,12 @@ A Python wheel of setuptools to use with venv.
 
 %prep
 %autosetup -p1 -n %{srcname}-%{version}
+%if %{without bootstrap}
+# If we don't have setuptools installed yet, we use the pre-generated .egg-info
+# See https://github.com/pypa/setuptools/pull/2543
+# And https://github.com/pypa/setuptools/issues/2550
 rm -r %{srcname}.egg-info
+%endif
 
 # Strip shbang
 find setuptools pkg_resources -name \*.py | xargs sed -i -e '1 {/^#!\//d}'
@@ -123,14 +129,9 @@ sed -i pytest.ini -e 's/ --flake8//' \
                   -e 's/ --cov//'
 
 %build
-# Warning, different bootstrap meaning here, has nothing to do with our bcond
-# This bootstraps .egg-info directory needed to build setuptools
-%{__python3} bootstrap.py
-
 %if %{without bootstrap}
 %py3_build_wheel
 %else
-
 %py3_build
 %endif
 
@@ -193,6 +194,11 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Tue Feb 02 2021 Miro Hrončok <mhroncok@redhat.com> - 53.0.0-1
+- Update to 53.0.0
+- https://setuptools.readthedocs.io/en/latest/history.html#v53-0-0
+- Fixes: rhbz#1923249
+
 * Tue Jan 26 2021 Lumír Balhar <lbalhar@redhat.com> - 52.0.0-1
 - Update to 52.0.0 (#1917060)
 - Removes easy_install module and executable
