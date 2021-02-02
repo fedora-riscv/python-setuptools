@@ -159,10 +159,6 @@ mkdir -p %{buildroot}%{python_wheeldir}
 install -p dist/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
 %endif
 
-%if %{without main_python}
-rm %{buildroot}%{_bindir}/easy_install
-%endif
-
 %if %{with tests}
 %check
 # Verify bundled provides are up to date
