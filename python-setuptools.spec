@@ -28,7 +28,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        53.0.0
+Version:        54.1.2
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -49,10 +49,12 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  gcc
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-pytest
+BuildRequires:  python%{python3_pkgversion}-sphinx
 BuildRequires:  python%{python3_pkgversion}-mock
 BuildRequires:  python%{python3_pkgversion}-pytest-fixture-config
 BuildRequires:  python%{python3_pkgversion}-pytest-virtualenv
 BuildRequires:  python%{python3_pkgversion}-jaraco-envs
+BuildRequires:  python%{python3_pkgversion}-jaraco-path
 %endif # with tests
 %if %{without bootstrap}
 BuildRequires:  python%{python3_pkgversion}-pip
@@ -128,6 +130,9 @@ rm setuptools/tests/test_integration.py
 sed -i pytest.ini -e 's/ --flake8//' \
                   -e 's/ --cov//'
 
+# https://github.com/pypa/setuptools/discussions/2607
+rm pyproject.toml
+
 %build
 %if %{without bootstrap}
 %py3_build_wheel
@@ -194,6 +199,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Tue Mar 16 2021 Tomas Hrnciar <thrnciar@redhat.com> - 54.1.2-1
+- Update to 54.1.2
+
 * Tue Feb 02 2021 Miro Hrončok <mhroncok@redhat.com> - 53.0.0-1
 - Update to 53.0.0
 - https://setuptools.readthedocs.io/en/latest/history.html#v53-0-0
