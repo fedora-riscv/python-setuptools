@@ -28,7 +28,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        54.1.2
+Version:        56.0.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -199,6 +199,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Fri Apr 09 2021 Tomas Hrnciar <thrnciar@redhat.com> - 56.0.0-1
+- Update to 56.0.0
+
 * Tue Mar 16 2021 Tomas Hrnciar <thrnciar@redhat.com> - 54.1.2-1
 - Update to 54.1.2
 
