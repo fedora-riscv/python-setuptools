@@ -1,0 +1,9 @@
+# we have extra tokens at the end of %endif/%else directives, we consider them useful
+addFilter(r'extra tokens at the end of %(endif|else) directive')
+
+# specfile-errors are listed twice, once with reason and once without
+# we filter out the empty ones
+addFilter(r'\bpython-setuptools\.(src|spec): (E|W): specfile-error\s+$')
+
+# SPELLING ERRORS
+addFilter(r'W: spelling-error .* en_US distutils ')
