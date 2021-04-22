@@ -29,7 +29,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        56.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -92,6 +92,9 @@ Provides:       python%{python3_pkgversion}dist(setuptools) = %{version}
 Provides:       python%{python3_version}dist(setuptools) = %{version}
 %endif
 
+# For users who might see ModuleNotFoundError: No module named 'pkg_resoureces'
+%py_provides    python%{python3_pkgversion}-pkg_resources
+%py_provides    python%{python3_pkgversion}-pkg-resources
 
 %description -n python%{python3_pkgversion}-setuptools
 Setuptools is a collection of enhancements to the Python 3 distutils that allow
@@ -199,6 +202,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Thu Apr 22 2021 Miro Hrončok <mhroncok@redhat.com> - 56.0.0-2
+- Provide python3-pkg_resources
+- Provide python3-pkg-resources
+
 * Fri Apr 09 2021 Tomas Hrnciar <thrnciar@redhat.com> - 56.0.0-1
 - Update to 56.0.0
 
