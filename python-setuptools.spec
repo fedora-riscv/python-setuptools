@@ -1,4 +1,3 @@
-%global _without_tests 1
 %global srcname setuptools
 
 # The original RHEL 9 content set is defined by (build)dependencies
@@ -30,7 +29,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        56.2.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -203,6 +202,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 56.2.0-4
+- Rebuilt for Python 3.10
+
 * Tue Jun 01 2021 Python Maint <python-maint@redhat.com> - 56.2.0-3
 - Bootstrap for Python 3.10
 
