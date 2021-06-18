@@ -29,10 +29,11 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        53.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
+# ordered-set is MIT
 # packaging is BSD or ASL 2.0
 # pyparsing is MIT
 # the setuptools logo has unknown license and possible TM problems,
@@ -73,10 +74,14 @@ This package also contains the runtime components of setuptools, necessary to
 execute the software that requires pkg_resources.
 
 # Virtual provides for the packages bundled by setuptools.
-# You can generate it with:
-# %%{_rpmconfigdir}/pythonbundles.py --namespace 'python%%{python3_pkgversion}dist' pkg_resources/_vendor/vendored.txt
+# Bundled packages are defined in two files:
+# - pkg_resources/_vendor/vendored.txt, and
+# - setuptools/_vendor/vendored.txt
+# Merge them to one and then generate the list with:
+# %%{_rpmconfigdir}/pythonbundles.py --namespace 'python%%{python3_pkgversion}dist' allvendor.txt
 %global bundled %{expand:
 Provides: bundled(python%{python3_pkgversion}dist(appdirs)) = 1.4.3
+Provides: bundled(python%{python3_pkgversion}dist(ordered-set)) = 3.1.1
 Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 20.4
 Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 2.2.1
 }
@@ -163,7 +168,8 @@ install -p dist/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
 %if %{with tests}
 %check
 # Verify bundled provides are up to date
-%{_rpmconfigdir}/pythonbundles.py pkg_resources/_vendor/vendored.txt --compare-with '%{bundled}'
+cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvendor.txt
+%{_rpmconfigdir}/pythonbundles.py allvendor.txt --namespace 'python%{python3_pkgversion}dist' --compare-with '%{bundled}'
 
 # Regression test, the wheel should not be larger than 600 KiB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
@@ -194,6 +200,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Mon Jun 21 2021 Lumír Balhar <lbalhar@redhat.com> - 53.0.0-2
+- Add missing bundled provide - ordered-set 
+
 * Tue Feb 02 2021 Miro Hrončok <mhroncok@redhat.com> - 53.0.0-1
 - Update to 53.0.0
 - https://setuptools.readthedocs.io/en/latest/history.html#v53-0-0
