@@ -28,11 +28,12 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        56.2.0
-Release:        4%{?dist}
+Version:        57.0.0
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
+# more-itertools is MIT
 # ordered-set is MIT
 # packaging is BSD or ASL 2.0
 # pyparsing is MIT
@@ -83,6 +84,7 @@ execute the software that requires pkg_resources.
 # %%{_rpmconfigdir}/pythonbundles.py --namespace 'python%%{python3_pkgversion}dist' allvendor.txt
 %global bundled %{expand:
 Provides: bundled(python%{python3_pkgversion}dist(appdirs)) = 1.4.3
+Provides: bundled(python%{python3_pkgversion}dist(more-itertools)) = 8.8
 Provides: bundled(python%{python3_pkgversion}dist(ordered-set)) = 3.1.1
 Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 20.4
 Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 2.2.1
@@ -208,6 +210,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Thu Jun 17 2021 Lumír Balhar <lbalhar@redhat.com> - 57.0.0-1
+- Update to 57.0.0
+Resolves: rhbz#1963411
+
 * Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 56.2.0-4
 - Rebuilt for Python 3.10
 
