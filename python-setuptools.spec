@@ -14,10 +14,11 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        49.1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
+# ordered-set is MIT
 # packaging is BSD or ASL 2.0
 # pyparsing is MIT
 # six is MIT
@@ -58,10 +59,14 @@ This package also contains the runtime components of setuptools, necessary to
 execute the software that requires pkg_resources.
 
 # Virtual provides for the packages bundled by setuptools.
-# You can generate it with:
-# %%{_rpmconfigdir}/pythonbundles.py pkg_resources/_vendor/vendored.txt
+# Bundled packages are defined in two files:
+# - pkg_resources/_vendor/vendored.txt, and
+# - setuptools/_vendor/vendored.txt
+# Merge them to one and then generate the list with:
+# %%{_rpmconfigdir}/pythonbundles.py allvendor.txt
 %global bundled %{expand:
 Provides: bundled(python3dist(appdirs)) = 1.4.3
+Provides: bundled(python3dist(ordered-set)) = 3.1.1
 Provides: bundled(python3dist(packaging)) = 19.2
 Provides: bundled(python3dist(pyparsing)) = 2.2.1
 Provides: bundled(python3dist(six)) = 1.10
@@ -151,7 +156,8 @@ install -p dist/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
 %if %{with tests}
 %check
 # Verify bundled provides are up to date
-%{_rpmconfigdir}/pythonbundles.py pkg_resources/_vendor/vendored.txt --compare-with '%{bundled}'
+cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvendor.txt
+%{_rpmconfigdir}/pythonbundles.py allvendor.txt --compare-with '%{bundled}'
 
 # Upstream tests
 # --ignore=pavement.py:
@@ -180,6 +186,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Mon Jun 21 2021 Lumír Balhar <lbalhar@redhat.com> - 49.1.3-2
+- Add missing bundled provide - ordered-set
+
 * Wed Jul 29 2020 Miro Hrončok <mhroncok@redhat.com> - 49.1.3-1
 - Update to 49.1.3 (#1853597)
 - https://setuptools.readthedocs.io/en/latest/history.html#v49-1-3
