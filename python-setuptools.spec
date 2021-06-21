@@ -179,7 +179,7 @@ install -p dist/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
 %check
 # Verify bundled provides are up to date
 cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvendor.txt
-%{_rpmconfigdir}/pythonbundles.py allvendor.txt --compare-with '%{bundled}'
+%{_rpmconfigdir}/pythonbundles.py allvendor.txt --namespace 'python%{python3_pkgversion}dist' --compare-with '%{bundled}'
 
 # Regression test, the wheel should not be larger than 600 KiB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
