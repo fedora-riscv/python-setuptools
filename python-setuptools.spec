@@ -28,7 +28,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        57.0.0
+Version:        57.1.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -210,6 +210,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Fri Jul 09 2021 Tomas Hrnciar <thrnciar@redhat.com> - 57.1.0-1
+- Update to 57.1.0
+- Fixes rhbz#1979122
+
 * Thu Jun 17 2021 Lumír Balhar <lbalhar@redhat.com> - 57.0.0-1
 - Update to 57.0.0
 Resolves: rhbz#1963411
