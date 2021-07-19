@@ -20,16 +20,13 @@
 # Disable it if you build this package in an alternative stack.
 %bcond_without main_python
 
-%if %{without bootstrap}
 %global python_wheelname %{srcname}-%{version}-py3-none-any.whl
-%global python3_record %{python3_sitelib}/%{srcname}-%{version}.dist-info/RECORD
-%endif
 %global python_wheeldir %{_datadir}/python-wheels
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        57.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -47,26 +44,20 @@ Source0:        %{pypi_source %{srcname} %{version}}
 BuildArch:      noarch
 
 BuildRequires:  python%{python3_pkgversion}-devel
+
 %if %{with tests}
 BuildRequires:  gcc
-BuildRequires:  python%{python3_pkgversion}-pip
-BuildRequires:  python%{python3_pkgversion}-pytest
-BuildRequires:  python%{python3_pkgversion}-sphinx
-BuildRequires:  python%{python3_pkgversion}-mock
-BuildRequires:  python%{python3_pkgversion}-pytest-fixture-config
-BuildRequires:  python%{python3_pkgversion}-pytest-virtualenv
-BuildRequires:  python%{python3_pkgversion}-jaraco-envs
-BuildRequires:  python%{python3_pkgversion}-jaraco-path
-%endif # with tests
+%endif
+
 %if %{without bootstrap}
-BuildRequires:  python%{python3_pkgversion}-pip
-BuildRequires:  python%{python3_pkgversion}-wheel
+BuildRequires:  pyproject-rpm-macros >= 0-44
+# Not to use the pre-generated egg-info, we use setuptools from previous build to generate it
 BuildRequires:  python%{python3_pkgversion}-setuptools
 # python3 bootstrap: this is built before the final build of python3, which
 # adds the dependency on python3-rpm-generators, so we require it manually
 # The minimal version is for bundled provides verification script
 BuildRequires:  python3-rpm-generators >= 11-8
-%endif # without bootstrap
+%endif
 
 %description
 Setuptools is a collection of enhancements to the Python distutils that allow
@@ -134,46 +125,49 @@ rm -r %{srcname}.egg-info
 find setuptools pkg_resources -name \*.py | xargs sed -i -e '1 {/^#!\//d}'
 # Remove bundled exes
 rm -f setuptools/*.exe
-# These tests require internet connection
-rm setuptools/tests/test_integration.py 
-# We don't do linting or coverage here
+# Don't ship these
+rm -r docs/{conf.py,_*}
+
+# The following test deps are optional and either not desired or not available in Fedora:
+# (note that we intentionally also remove e.g. flake8-something or something-flake8 here)
+sed -Ei setup.cfg -e  '/\bpytest-(checkdocs|black|cov|mypy|enabler)\b/d' \
+                  -e  '/\bflake8\b/d' \
+                  -e  '/\bpaver\b/d'
+# Strip pytest options that require the packages removed by the previous sed
 sed -i pytest.ini -e 's/ --flake8//' \
                   -e 's/ --cov//'
 
-# https://github.com/pypa/setuptools/discussions/2607
-rm pyproject.toml
+%if %{without bootstrap}
+%generate_buildrequires
+%pyproject_buildrequires -r %{?with_tests:-x testing}
+%endif
 
 %build
-%if %{without bootstrap}
-%py3_build_wheel
-%else
+%if %{with bootstrap}
 %py3_build
+%else
+%pyproject_wheel
 %endif
 
 
 %install
-%if %{without bootstrap}
-%py3_install_wheel %{python_wheelname}
-%else
+%if %{with bootstrap}
 %py3_install
+%else
+%pyproject_install
+%pyproject_save_files setuptools pkg_resources _distutils_hack
 %endif
 
-# This is not installed (in 45.2.0 anyway), but better be safe than sorry
-rm -rf %{buildroot}%{python3_sitelib}/{setuptools,pkg_resources}/tests
-
+# https://github.com/pypa/setuptools/issues/2709
+rm -rf %{buildroot}%{python3_sitelib}/pkg_resources/tests/
 %if %{without bootstrap}
-sed -i '/^setuptools\/tests\//d' %{buildroot}%{python3_record}
-%endif
+sed -i '/\/pkg_resources\/tests\b/d' %{pyproject_files}
 
-find %{buildroot}%{python3_sitelib} -name '*.exe' | xargs rm -f
-
-# Don't ship these
-rm -r docs/{conf.py,_*}
-
-%if %{without bootstrap}
+# Install the wheel for the python-setuptools-wheel package
 mkdir -p %{buildroot}%{python_wheeldir}
-install -p dist/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
+install -p %{_pyproject_wheeldir}/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
 %endif
+
 
 %if %{with tests}
 %check
@@ -183,22 +177,34 @@ cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvend
 
 # Regression test, the wheel should not be larger than 600 KiB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
-test $(du dist/%{python_wheelname} | cut -f1) -lt 600
+test $(du %{_pyproject_wheeldir}/%{python_wheelname} | cut -f1) -lt 600
+
+# Regression test, the tests are not supposed to be installed
+test ! -d %{buildroot}%{python3_sitelib}/pkg_resources/tests
+test ! -d %{buildroot}%{python3_sitelib}/setuptools/tests
+
+# https://github.com/pypa/setuptools/discussions/2607
+rm pyproject.toml
 
 # Upstream tests
+# --ignore=setuptools/tests/test_integration.py
+#   the tests require internet connection
 # --ignore=pavement.py:
 #   pavement.py is only used by upstream to do releases and vendoring, we don't ship it
-PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
+PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore=pavement.py
 %endif # with tests
 
 
-%files -n python%{python3_pkgversion}-setuptools
+%files -n python%{python3_pkgversion}-setuptools %{?!with_bootstrap:-f %{pyproject_files}}
 %license LICENSE
 %doc docs/* CHANGES.rst README.rst
-%{python3_sitelib}/pkg_resources/
-%{python3_sitelib}/setuptools*/
-%{python3_sitelib}/_distutils_hack/
 %{python3_sitelib}/distutils-precedence.pth
+%if %{with bootstrap}
+%{python3_sitelib}/setuptools-%{version}-py%{python3_version}.egg-info/
+%{python3_sitelib}/pkg_resources/
+%{python3_sitelib}/setuptools/
+%{python3_sitelib}/_distutils_hack/
+%endif
 
 %if %{without bootstrap}
 %files wheel
@@ -210,6 +216,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Mon Jul 19 2021 Miro Hrončok <mhroncok@redhat.com> - 57.1.0-2
+- Modernize packaging
+
 * Fri Jul 09 2021 Tomas Hrnciar <thrnciar@redhat.com> - 57.1.0-1
 - Update to 57.1.0
 - Fixes rhbz#1979122
