@@ -26,7 +26,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        57.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -216,6 +216,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 57.1.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Mon Jul 19 2021 Miro Hrončok <mhroncok@redhat.com> - 57.1.0-2
 - Modernize packaging
 
