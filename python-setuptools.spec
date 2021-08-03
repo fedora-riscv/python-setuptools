@@ -25,8 +25,8 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        57.1.0
-Release:        3%{?dist}
+Version:        57.4.0
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -126,7 +126,7 @@ find setuptools pkg_resources -name \*.py | xargs sed -i -e '1 {/^#!\//d}'
 # Remove bundled exes
 rm -f setuptools/*.exe
 # Don't ship these
-rm -r docs/{conf.py,_*}
+rm -r docs/conf.py
 
 # The following test deps are optional and either not desired or not available in Fedora:
 # (note that we intentionally also remove e.g. flake8-something or something-flake8 here)
@@ -216,6 +216,11 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Tue Aug 03 2021 Miro Hrončok <mhroncok@redhat.com> - 57.4.0-1
+- Update to 57.4.0
+- https://setuptools.readthedocs.io/en/latest/history.html#v57-4-0
+- Fixes rhbz#1982493
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 57.1.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
