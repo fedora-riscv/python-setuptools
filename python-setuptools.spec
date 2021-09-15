@@ -25,7 +25,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        57.4.0
+Version:        58.2.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -40,6 +40,10 @@ Summary:        Easily build and distribute Python packages
 License:        MIT and (BSD or ASL 2.0)
 URL:            https://pypi.python.org/pypi/%{srcname}
 Source0:        %{pypi_source %{srcname} %{version}}
+
+# Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
+# For future reference, these packages were removed: pytest-(checkdocs|black|cov|mypy|enabler), flake8-2020, paver
+Patch1:         0001-Remove-optional-or-unpackaged-test-deps.patch
 
 BuildArch:      noarch
 
@@ -128,15 +132,6 @@ rm -f setuptools/*.exe
 # Don't ship these
 rm -r docs/conf.py
 
-# The following test deps are optional and either not desired or not available in Fedora:
-# (note that we intentionally also remove e.g. flake8-something or something-flake8 here)
-sed -Ei setup.cfg -e  '/\bpytest-(checkdocs|black|cov|mypy|enabler)\b/d' \
-                  -e  '/\bflake8\b/d' \
-                  -e  '/\bpaver\b/d'
-# Strip pytest options that require the packages removed by the previous sed
-sed -i pytest.ini -e 's/ --flake8//' \
-                  -e 's/ --cov//'
-
 %if %{without bootstrap}
 %generate_buildrequires
 %pyproject_buildrequires -r %{?with_tests:-x testing}
@@ -216,6 +211,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Tue Oct 19 2021 Tomáš Hrnčiar <thrnciar@redhat.com> - 58.2.0-1
+- Update to 58.2.0
+- Fixes rhbz#2001228
+
 * Tue Aug 03 2021 Miro Hrončok <mhroncok@redhat.com> - 57.4.0-1
 - Update to 57.4.0
 - https://setuptools.readthedocs.io/en/latest/history.html#v57-4-0
