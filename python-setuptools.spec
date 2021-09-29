@@ -20,8 +20,7 @@
 # Disable it if you build this package in an alternative stack.
 %bcond_without main_python
 
-%global python_wheelname %{srcname}-%{version}-py3-none-any.whl
-%global python_wheeldir %{_datadir}/python-wheels
+%global python_wheel_name %{srcname}-%{version}-py3-none-any.whl
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
@@ -105,11 +104,11 @@ This package also contains the runtime components of setuptools, necessary to
 execute the software that requires pkg_resources.
 
 %if %{without bootstrap}
-%package wheel
+%package -n     %{python_wheel_pkg_prefix}-%{srcname}-wheel
 Summary:        The setuptools wheel
 %{bundled}
 
-%description wheel
+%description -n %{python_wheel_pkg_prefix}-%{srcname}-wheel
 A Python wheel of setuptools to use with venv.
 %endif
 
@@ -157,8 +156,8 @@ rm -rf %{buildroot}%{python3_sitelib}/pkg_resources/tests/
 sed -i '/\/pkg_resources\/tests\b/d' %{pyproject_files}
 
 # Install the wheel for the python-setuptools-wheel package
-mkdir -p %{buildroot}%{python_wheeldir}
-install -p %{_pyproject_wheeldir}/%{python_wheelname} -t %{buildroot}%{python_wheeldir}
+mkdir -p %{buildroot}%{python_wheel_dir}
+install -p %{_pyproject_wheeldir}/%{python_wheel_name} -t %{buildroot}%{python_wheel_dir}
 %endif
 
 
@@ -170,7 +169,7 @@ cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvend
 
 # Regression test, the wheel should not be larger than 600 KiB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
-test $(du %{_pyproject_wheeldir}/%{python_wheelname} | cut -f1) -lt 600
+test $(du %{_pyproject_wheeldir}/%{python_wheel_name} | cut -f1) -lt 600
 
 # Regression test, the tests are not supposed to be installed
 test ! -d %{buildroot}%{python3_sitelib}/pkg_resources/tests
@@ -200,11 +199,11 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 %endif
 
 %if %{without bootstrap}
-%files wheel
+%files -n %{python_wheel_pkg_prefix}-%{srcname}-wheel
 %license LICENSE
 # we own the dir for simplicity
-%dir %{python_wheeldir}/
-%{python_wheeldir}/%{python_wheelname}
+%dir %{python_wheel_dir}/
+%{python_wheel_dir}/%{python_wheel_name}
 %endif
 
 
