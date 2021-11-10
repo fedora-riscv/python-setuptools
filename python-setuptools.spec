@@ -25,7 +25,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        58.2.0
+Version:        58.5.3
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -34,9 +34,7 @@ Summary:        Easily build and distribute Python packages
 # ordered-set is MIT
 # packaging is BSD or ASL 2.0
 # pyparsing is MIT
-# the setuptools logo has unknown license and possible TM problems,
-# but the sdist **does not** contain it,
-# see https://github.com/pypa/setuptools/issues/2227
+# the setuptools logo is MIT
 License:        MIT and (BSD or ASL 2.0)
 URL:            https://pypi.python.org/pypi/%{srcname}
 Source0:        %{pypi_source %{srcname} %{version}}
@@ -211,6 +209,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Wed Nov 10 2021 Karolina Surma <ksurma@redhat.com> - 58.5.3-1
+- Update to 58.5.3
+- Fixes rhbz#2016715
+
 * Tue Oct 19 2021 Tomáš Hrnčiar <thrnciar@redhat.com> - 58.2.0-1
 - Update to 58.2.0
 - Fixes rhbz#2001228
