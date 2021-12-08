@@ -1,6 +1,6 @@
-From d327cba9f022992689edd30beb157e0aa0a16c11 Mon Sep 17 00:00:00 2001
+From 4612fd1b6b7f9d3fdbfad34863e5b04535bb44cc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Tom=C3=A1=C5=A1=20Hrn=C4=8Diar?= <thrnciar@redhat.com>
-Date: Mon, 13 Sep 2021 17:56:27 +0200
+Date: Wed, 8 Dec 2021 10:22:37 +0100
 Subject: [PATCH] Remove optional or unpackaged test deps
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] Remove optional or unpackaged test deps
  1 file changed, 10 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 9eee792..fbe95f5 100644
+index 0bc0101..442da7a 100644
 --- a/setup.cfg
 +++ b/setup.cfg
 @@ -37,21 +37,11 @@ exclude =
@@ -27,12 +27,12 @@ index 9eee792..fbe95f5 100644
  	mock
 -	flake8-2020
  	virtualenv>=13.0.0
- 	pytest-virtualenv>=1.2.7
+ 	pytest-virtualenv>=1.2.7  # TODO: Update once man-group/pytest-plugins#188 is solved
  	wheel
 -	paver
  	pip>=19.1 # For proper file:// URLs support.
- 	jaraco.envs
+ 	jaraco.envs>=2.2
  	pytest-xdist
 -- 
-2.31.1
+2.33.1
 

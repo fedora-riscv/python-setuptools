@@ -24,7 +24,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        58.5.3
+Version:        59.6.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -78,7 +78,7 @@ execute the software that requires pkg_resources.
 Provides: bundled(python%{python3_pkgversion}dist(appdirs)) = 1.4.3
 Provides: bundled(python%{python3_pkgversion}dist(more-itertools)) = 8.8
 Provides: bundled(python%{python3_pkgversion}dist(ordered-set)) = 3.1.1
-Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 20.4
+Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 21.2
 Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 2.2.1
 }
 
@@ -208,6 +208,11 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Wed Dec 08 2021 Tomáš Hrnčiar <thrnciar@redhat.com> - 59.6.0-1
+- Update to 59.6.0
+- Fixes: rhbz#2023119
+- Fixes: rhbz#2031556
+
 * Wed Nov 10 2021 Karolina Surma <ksurma@redhat.com> - 58.5.3-1
 - Update to 58.5.3
 - Fixes rhbz#2016715
