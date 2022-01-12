@@ -29,7 +29,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        53.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -42,6 +42,19 @@ Summary:        Easily build and distribute Python packages
 License:        MIT and (BSD or ASL 2.0)
 URL:            https://pypi.python.org/pypi/%{srcname}
 Source0:        %{pypi_source %{srcname} %{version}}
+
+# Two backports related to the License-File metadata field
+# Fixes https://bugzilla.redhat.com/2033994
+#
+# license_files - Add support for glob patterns + add default patterns
+# https://github.com/pypa/setuptools/pull/2620
+# included in setuptools 56+
+#
+# Add License-File field to package metadata
+# https://github.com/pypa/setuptools/pull/2645
+# included in setuptools 57+
+# depends on the previous one
+Patch1:         license-file-metadata.patch
 
 BuildArch:      noarch
 
@@ -200,6 +213,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=pavement.py
 
 
 %changelog
+* Wed Jan 12 2022 Miro Hrončok <mhroncok@redhat.com> - 53.0.0-3
+- Add License-File field to package metadata
+- Related: rhbz#2033994
+
 * Mon Jun 21 2021 Lumír Balhar <lbalhar@redhat.com> - 53.0.0-2
 - Add missing bundled provide - ordered-set 
 
