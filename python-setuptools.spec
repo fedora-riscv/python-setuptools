@@ -110,6 +110,7 @@ Provides:       python%{python3_version}dist(setuptools) = %{version}
 %endif
 
 # For users who might see ModuleNotFoundError: No module named 'pkg_resoureces'
+# NB: Those are two different provides: one contains underscore, the other hyphen
 %py_provides    python%{python3_pkgversion}-pkg_resources
 %py_provides    python%{python3_pkgversion}-pkg-resources
 
