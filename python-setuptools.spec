@@ -24,8 +24,8 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        59.6.0
-Release:        2%{?dist}
+Version:        60.9.3
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -33,14 +33,27 @@ Summary:        Easily build and distribute Python packages
 # ordered-set is MIT
 # packaging is BSD or ASL 2.0
 # pyparsing is MIT
+# importlib-metadata is ASL 2.0
+# importlib-resources is ASL 2.0
+# jaraco.text is MIT
+# typing-extensions is Python
+# zipp is MIT
 # the setuptools logo is MIT
-License:        MIT and (BSD or ASL 2.0)
+License:        MIT and ASL 2.0 and (BSD or ASL 2.0) and Python
 URL:            https://pypi.python.org/pypi/%{srcname}
 Source0:        %{pypi_source %{srcname} %{version}}
 
 # Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
-# For future reference, these packages were removed: pytest-(checkdocs|black|cov|mypy|enabler), flake8-2020, paver
 Patch:          Remove-optional-or-unpackaged-test-deps.patch
+# Increase test isolation by unsetting PYTHONPATH in spawned processes -
+# with this patch tests run correctly in our special build environment
+# This patch was merged upstream:
+# https://github.com/pypa/setuptools/pull/3133
+Patch:          Isolate-spawned-processes-by-unsetting-PYTHONPATH.patch
+# Run the tests using the wheel we've just built, there's no need to build
+# a new one just for the tests (and it requires internet connection)
+# PR open upstream: https://github.com/pypa/setuptools/pull/3156
+Patch:          Point-to-a-custom-pre-built-distribution-of-setuptools.patch
 
 BuildArch:      noarch
 
@@ -76,10 +89,15 @@ execute the software that requires pkg_resources.
 # %%{_rpmconfigdir}/pythonbundles.py --namespace 'python%%{python3_pkgversion}dist' allvendor.txt
 %global bundled %{expand:
 Provides: bundled(python%{python3_pkgversion}dist(appdirs)) = 1.4.3
+Provides: bundled(python%{python3_pkgversion}dist(importlib-metadata)) = 4.11.1
+Provides: bundled(python%{python3_pkgversion}dist(importlib-resources)) = 5.4
+Provides: bundled(python%{python3_pkgversion}dist(jaraco-text)) = 3.7
 Provides: bundled(python%{python3_pkgversion}dist(more-itertools)) = 8.8
 Provides: bundled(python%{python3_pkgversion}dist(ordered-set)) = 3.1.1
-Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 21.2
+Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 21.3
 Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 2.2.1
+Provides: bundled(python%{python3_pkgversion}dist(typing-extensions)) = 4.0.1
+Provides: bundled(python%{python3_pkgversion}dist(zipp)) = 3.7
 }
 
 %package -n python%{python3_pkgversion}-setuptools
@@ -167,9 +185,9 @@ install -p %{_pyproject_wheeldir}/%{python_wheel_name} -t %{buildroot}%{python_w
 cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvendor.txt
 %{_rpmconfigdir}/pythonbundles.py allvendor.txt --namespace 'python%{python3_pkgversion}dist' --compare-with '%{bundled}'
 
-# Regression test, the wheel should not be larger than 600 KiB
+# Regression test, the wheel should not be larger than 800 KiB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
-test $(du %{_pyproject_wheeldir}/%{python_wheel_name} | cut -f1) -lt 600
+test $(du %{_pyproject_wheeldir}/%{python_wheel_name} | cut -f1) -lt 800
 
 # Regression test, the tests are not supposed to be installed
 test ! -d %{buildroot}%{python3_sitelib}/pkg_resources/tests
@@ -180,10 +198,17 @@ rm pyproject.toml
 
 # Upstream tests
 # --ignore=setuptools/tests/test_integration.py
+# --ignore=setuptools/tests/integration/
+# -k "not test_pip_upgrade_from_source"
 #   the tests require internet connection
-# --ignore=pavement.py:
-#   pavement.py is only used by upstream to do releases and vendoring, we don't ship it
-PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore=pavement.py
+# --ignore=setuptools/tests/test_develop.py
+#   the tests require pip-run which we don't have in Fedora
+PRE_BUILT_SETUPTOOLS_WHEEL=%{_pyproject_wheeldir}/%{python_wheel_name} \
+PYTHONPATH=$(pwd) %pytest \
+ --ignore=setuptools/tests/test_integration.py \
+ --ignore=setuptools/tests/integration/ \
+ --ignore=setuptools/tests/test_develop.py \
+ -k "not test_pip_upgrade_from_source"
 %endif # with tests
 
 
@@ -208,6 +233,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Wed Feb 16 2022 Karolina Surma <ksurma@redhat.com> - 60.9.3-1
+- Update to 60.9.3
+- Fixes rhbz#2033860
+
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 59.6.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 

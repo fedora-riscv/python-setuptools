@@ -1,17 +1,17 @@
-From 4612fd1b6b7f9d3fdbfad34863e5b04535bb44cc Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Tom=C3=A1=C5=A1=20Hrn=C4=8Diar?= <thrnciar@redhat.com>
-Date: Wed, 8 Dec 2021 10:22:37 +0100
-Subject: [PATCH] Remove optional or unpackaged test deps
+From bc29357f2effabd91c47562d332f0ae731ffcee0 Mon Sep 17 00:00:00 2001
+From: Karolina Surma <ksurma@redhat.com>
+Date: Mon, 21 Feb 2022 09:22:42 +0100
+Subject: [PATCH] Update
 
 ---
- setup.cfg | 10 ----------
- 1 file changed, 10 deletions(-)
+ setup.cfg | 14 --------------
+ 1 file changed, 14 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 0bc0101..442da7a 100644
+index 4a4a9a2..ce587f6 100644
 --- a/setup.cfg
 +++ b/setup.cfg
-@@ -37,21 +37,11 @@ exclude =
+@@ -38,19 +38,8 @@ exclude =
  [options.extras_require]
  testing = 
  	pytest >= 6
@@ -19,20 +19,28 @@ index 0bc0101..442da7a 100644
 -	pytest-flake8
 -	pytest-black >= 0.3.7; \
 -	python_implementation != "PyPy"
--	pytest-cov
--	pytest-mypy; \
+-	pytest-cov; \
+-	python_implementation != "PyPy"
+-	pytest-mypy >= 0.9.1; \
 -	python_implementation != "PyPy"
 -	pytest-enabler >= 1.0.1
+-	pytest-perf
  	
  	mock
 -	flake8-2020
  	virtualenv>=13.0.0
- 	pytest-virtualenv>=1.2.7  # TODO: Update once man-group/pytest-plugins#188 is solved
  	wheel
--	paver
  	pip>=19.1 # For proper file:// URLs support.
- 	jaraco.envs>=2.2
+@@ -58,9 +47,6 @@ testing =
+ 	pytest-xdist
+ 	sphinx>=4.3.2
+ 	jaraco.path>=3.2.0
+-	build[virtualenv]
+-	filelock>=3.4.0
+-	pip_run>=8.8
+ testing-integration = 
+ 	pytest
  	pytest-xdist
 -- 
-2.33.1
+2.35.1
 

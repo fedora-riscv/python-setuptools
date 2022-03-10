@@ -1,0 +1,45 @@
+From d00beeefc6172036ecc17ad7945e80852d5210a5 Mon Sep 17 00:00:00 2001
+From: Karolina Surma <ksurma@redhat.com>
+Date: Wed, 2 Mar 2022 11:42:41 +0100
+Subject: [PATCH] Point to a custom pre-built distribution of setuptools
+
+---
+ setuptools/tests/fixtures.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/setuptools/tests/fixtures.py b/setuptools/tests/fixtures.py
+index d61ffa4..cc2d4d8 100644
+--- a/setuptools/tests/fixtures.py
++++ b/setuptools/tests/fixtures.py
+@@ -1,7 +1,10 @@
+ import contextlib
++import os
+ import sys
+ import subprocess
+
++from pathlib import Path
++
+ import pytest
+ import path
+
+@@ -64,6 +67,8 @@ def sample_project(tmp_path):
+
+ @pytest.fixture(scope="session")
+ def setuptools_sdist(tmp_path_factory, request):
++    if os.getenv("PRE_BUILT_SETUPTOOLS_SDIST"):
++        return Path(os.getenv("PRE_BUILT_SETUPTOOLS_SDIST")).resolve()
+     with contexts.session_locked_tmp_dir(
+             request, tmp_path_factory, "sdist_build") as tmp:
+         dist = next(tmp.glob("*.tar.gz"), None)
+@@ -79,6 +84,8 @@ def setuptools_sdist(tmp_path_factory, request):
+
+ @pytest.fixture(scope="session")
+ def setuptools_wheel(tmp_path_factory, request):
++    if os.getenv("PRE_BUILT_SETUPTOOLS_WHEEL"):
++        return Path(os.getenv("PRE_BUILT_SETUPTOOLS_WHEEL")).resolve()
+     with contexts.session_locked_tmp_dir(
+             request, tmp_path_factory, "wheel_build") as tmp:
+         dist = next(tmp.glob("*.whl"), None)
+--
+2.35.1
+
