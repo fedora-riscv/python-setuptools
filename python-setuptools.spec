@@ -40,7 +40,7 @@ Source0:        %{pypi_source %{srcname} %{version}}
 
 # Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
 # For future reference, these packages were removed: pytest-(checkdocs|black|cov|mypy|enabler), flake8-2020, paver
-Patch1:         0001-Remove-optional-or-unpackaged-test-deps.patch
+Patch:          Remove-optional-or-unpackaged-test-deps.patch
 
 BuildArch:      noarch
 
