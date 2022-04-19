@@ -25,7 +25,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        60.9.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -54,6 +54,11 @@ Patch:          Isolate-spawned-processes-by-unsetting-PYTHONPATH.patch
 # a new one just for the tests (and it requires internet connection)
 # PR open upstream: https://github.com/pypa/setuptools/pull/3156
 Patch:          Point-to-a-custom-pre-built-distribution-of-setuptools.patch
+
+# setuptools doesn't build with Python 3.11.0a7 because of bundled pyparsing that uses deprecated
+# sre_constants module.
+# Upstream report: https://github.com/pypa/setuptools/issues/3274
+Patch:          No-longer-use-undocumented-module-sre_constants.patch
 
 BuildArch:      noarch
 
@@ -234,6 +239,10 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
+* Tue Apr 19 2022 Tomáš Hrnčiar <thrnciar@redhat.com> - 60.9.3-2
+- No longer use the deprecated sre_constants module in bundled pyparsing
+- Fixes: rhbz#2075487
+
 * Wed Feb 16 2022 Karolina Surma <ksurma@redhat.com> - 60.9.3-1
 - Update to 60.9.3
 - Fixes rhbz#2033860
