@@ -24,8 +24,8 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        60.9.3
-Release:        5%{?dist}
+Version:        62.6.0
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -38,6 +38,8 @@ Summary:        Easily build and distribute Python packages
 # jaraco.text is MIT
 # typing-extensions is Python
 # zipp is MIT
+# nspektr is MIT
+# tomli is MIT
 # the setuptools logo is MIT
 License:        MIT and ASL 2.0 and (BSD or ASL 2.0) and Python
 URL:            https://pypi.python.org/pypi/%{srcname}
@@ -45,20 +47,6 @@ Source0:        %{pypi_source %{srcname} %{version}}
 
 # Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
 Patch:          Remove-optional-or-unpackaged-test-deps.patch
-# Increase test isolation by unsetting PYTHONPATH in spawned processes -
-# with this patch tests run correctly in our special build environment
-# This patch was merged upstream:
-# https://github.com/pypa/setuptools/pull/3133
-Patch:          Isolate-spawned-processes-by-unsetting-PYTHONPATH.patch
-# Run the tests using the wheel we've just built, there's no need to build
-# a new one just for the tests (and it requires internet connection)
-# PR open upstream: https://github.com/pypa/setuptools/pull/3156
-Patch:          Point-to-a-custom-pre-built-distribution-of-setuptools.patch
-
-# setuptools doesn't build with Python 3.11.0a7 because of bundled pyparsing that uses deprecated
-# sre_constants module.
-# Upstream report: https://github.com/pypa/setuptools/issues/3274
-Patch:          No-longer-use-undocumented-module-sre_constants.patch
 
 BuildArch:      noarch
 
@@ -100,9 +88,11 @@ Provides: bundled(python%{python3_pkgversion}dist(jaraco-text)) = 3.7
 Provides: bundled(python%{python3_pkgversion}dist(more-itertools)) = 8.8
 Provides: bundled(python%{python3_pkgversion}dist(ordered-set)) = 3.1.1
 Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 21.3
-Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 2.2.1
+Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 3.0.8
 Provides: bundled(python%{python3_pkgversion}dist(typing-extensions)) = 4.0.1
 Provides: bundled(python%{python3_pkgversion}dist(zipp)) = 3.7
+Provides: bundled(python%{python3_pkgversion}dist(nspektr)) = 0.3
+Provides: bundled(python%{python3_pkgversion}dist(tomli)) = 2.0.1
 }
 
 %package -n python%{python3_pkgversion}-setuptools
@@ -191,9 +181,9 @@ install -p %{_pyproject_wheeldir}/%{python_wheel_name} -t %{buildroot}%{python_w
 cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvendor.txt
 %{_rpmconfigdir}/pythonbundles.py allvendor.txt --namespace 'python%{python3_pkgversion}dist' --compare-with '%{bundled}'
 
-# Regression test, the wheel should not be larger than 800 KiB
+# Regression test, the wheel should not be larger than 900 KiB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
-test $(du %{_pyproject_wheeldir}/%{python_wheel_name} | cut -f1) -lt 800
+test $(du %{_pyproject_wheeldir}/%{python_wheel_name} | cut -f1) -lt 900
 
 # Regression test, the tests are not supposed to be installed
 test ! -d %{buildroot}%{python3_sitelib}/pkg_resources/tests
@@ -205,6 +195,7 @@ rm pyproject.toml
 # Upstream tests
 # --ignore=setuptools/tests/test_integration.py
 # --ignore=setuptools/tests/integration/
+# --ignore=setuptools/tests/config/test_apply_pyprojecttoml.py
 # -k "not test_pip_upgrade_from_source"
 #   the tests require internet connection
 # --ignore=setuptools/tests/test_develop.py
@@ -214,6 +205,7 @@ PYTHONPATH=$(pwd) %pytest \
  --ignore=setuptools/tests/test_integration.py \
  --ignore=setuptools/tests/integration/ \
  --ignore=setuptools/tests/test_develop.py \
+ --ignore=setuptools/tests/config/test_apply_pyprojecttoml.py \
  -k "not test_pip_upgrade_from_source"
 %endif # with tests
 
@@ -239,6 +231,10 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
+* Tue Jun 14 2022 Charalampos Stratakis <cstratak@redhat.com> - 62.6.0-1
+- Update to 62.6.0
+- Fixes: rhbz#2064842
+
 * Tue Jun 14 2022 Python Maint <python-maint@redhat.com> - 60.9.3-5
 - Rebuilt for Python 3.11
 

@@ -1,14 +1,14 @@
-From bc29357f2effabd91c47562d332f0ae731ffcee0 Mon Sep 17 00:00:00 2001
+From 7b0ba61bfbe7765d034f82158eba57c74b770405 Mon Sep 17 00:00:00 2001
 From: Karolina Surma <ksurma@redhat.com>
 Date: Mon, 21 Feb 2022 09:22:42 +0100
 Subject: [PATCH] Update
 
 ---
- setup.cfg | 14 --------------
- 1 file changed, 14 deletions(-)
+ setup.cfg | 13 -------------
+ 1 file changed, 13 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 4a4a9a2..ce587f6 100644
+index 8c71052..e6df94f 100644
 --- a/setup.cfg
 +++ b/setup.cfg
 @@ -38,19 +38,8 @@ exclude =
@@ -31,16 +31,15 @@ index 4a4a9a2..ce587f6 100644
  	virtualenv>=13.0.0
  	wheel
  	pip>=19.1 # For proper file:// URLs support.
-@@ -58,9 +47,6 @@ testing =
+@@ -58,8 +47,6 @@ testing =
  	pytest-xdist
- 	sphinx>=4.3.2
  	jaraco.path>=3.2.0
--	build[virtualenv]
+ 	build[virtualenv]
 -	filelock>=3.4.0
 -	pip_run>=8.8
+ 	ini2toml[lite]>=0.9
+ 	tomli-w>=1.0.0
  testing-integration = 
- 	pytest
- 	pytest-xdist
 -- 
-2.35.1
+2.35.3
 
