@@ -28,6 +28,9 @@
     - smoke310:
         dir: python/smoke
         run: VERSION=3.10 ./venv.sh
+    - smoke311:
+        dir: python/smoke
+        run: VERSION=3.11 ./venv.sh
     - smoke27:
         dir: python/smoke
         run: VERSION=2.7 METHOD=virtualenv ./venv.sh
@@ -49,6 +52,9 @@
     - smoke310_virtualenv:
         dir: python/smoke
         run: VERSION=3.10 METHOD=virtualenv ./venv.sh
+    - smoke311_virtualenv:
+        dir: python/smoke
+        run: VERSION=3.11 METHOD=virtualenv ./venv.sh
     - pyproject_pytest:
         dir: pyproject-rpm-macros/tests
         run: ./mocktest.sh python-pytest
@@ -63,7 +69,8 @@
     - python3.7
     - python3.8
     - python3.9
-    - python3.10
+    - python3.10-devel
+    - python3.11-devel
     - python3-devel
     - python3-tox
     - mock
