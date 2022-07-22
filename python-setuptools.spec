@@ -25,7 +25,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        62.6.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -231,6 +231,9 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 62.6.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Tue Jun 14 2022 Charalampos Stratakis <cstratak@redhat.com> - 62.6.0-1
 - Update to 62.6.0
 - Fixes: rhbz#2064842
