@@ -24,8 +24,8 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        62.6.0
-Release:        2%{?dist}
+Version:        65.0.2
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -88,10 +88,9 @@ Provides: bundled(python%{python3_pkgversion}dist(jaraco-text)) = 3.7
 Provides: bundled(python%{python3_pkgversion}dist(more-itertools)) = 8.8
 Provides: bundled(python%{python3_pkgversion}dist(ordered-set)) = 3.1.1
 Provides: bundled(python%{python3_pkgversion}dist(packaging)) = 21.3
-Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 3.0.8
+Provides: bundled(python%{python3_pkgversion}dist(pyparsing)) = 3.0.9
 Provides: bundled(python%{python3_pkgversion}dist(typing-extensions)) = 4.0.1
 Provides: bundled(python%{python3_pkgversion}dist(zipp)) = 3.7
-Provides: bundled(python%{python3_pkgversion}dist(nspektr)) = 0.3
 Provides: bundled(python%{python3_pkgversion}dist(tomli)) = 2.0.1
 }
 
@@ -204,7 +203,7 @@ PRE_BUILT_SETUPTOOLS_WHEEL=%{_pyproject_wheeldir}/%{python_wheel_name} \
 PYTHONPATH=$(pwd) %pytest \
  --ignore=setuptools/tests/test_integration.py \
  --ignore=setuptools/tests/integration/ \
- --ignore=setuptools/tests/test_develop.py \
+ --ignore=setuptools/tests/test_editable_install.py \
  --ignore=setuptools/tests/config/test_apply_pyprojecttoml.py \
  -k "not test_pip_upgrade_from_source"
 %endif # with tests
@@ -231,6 +230,10 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
+* Thu Jul 28 2022 Tomáš Hrnčiar <thrnciar@redhat.com> - 65.0.2-1
+- Update to 65.0.2
+- Fixes: rhbz#2102402
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 62.6.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
