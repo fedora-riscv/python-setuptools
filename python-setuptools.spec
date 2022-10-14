@@ -24,7 +24,7 @@
 
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        65.4.1
+Version:        65.5.0
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
@@ -230,9 +230,12 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
+* Fri Oct 14 2022 Miro Hrončok <mhroncok@redhat.com> - 65.5.0-1
+- Update to 65.5.0
+- Fixes: rhbz#2129562
+
 * Thu Oct 13 2022 Miro Hrončok <mhroncok@redhat.com> - 65.4.1-1
 - Update to 65.4.1
-- Fixes: rhbz#2129562
 - Update the RPM License field to use SPDX expressions
 
 * Tue Sep 13 2022 Lumír Balhar <lbalhar@redhat.com> - 65.3.0-1
