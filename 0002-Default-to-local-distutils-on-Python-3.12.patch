@@ -1,0 +1,26 @@
+From 1d0f6dca621a405bae4204e7af7a3fd8d7f8e201 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
+Date: Wed, 16 Nov 2022 16:03:55 +0100
+Subject: [PATCH] Default to local distutils on Python 3.12+
+
+---
+ _distutils_hack/__init__.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/_distutils_hack/__init__.py b/_distutils_hack/__init__.py
+index f707416..52a7690 100644
+--- a/_distutils_hack/__init__.py
++++ b/_distutils_hack/__init__.py
+@@ -42,7 +42,8 @@ def enabled():
+     """
+     Allow selection of distutils by environment variable.
+     """
+-    which = os.environ.get('SETUPTOOLS_USE_DISTUTILS', 'stdlib')
++    default = 'stdlib' if sys.version_info < (3, 12) else 'local'
++    which = os.environ.get('SETUPTOOLS_USE_DISTUTILS', default)
+     return which == 'local'
+ 
+ 
+-- 
+2.38.1
+

@@ -25,7 +25,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        59.6.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -41,6 +41,12 @@ Source0:        %{pypi_source %{srcname} %{version}}
 # Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
 # For future reference, these packages were removed: pytest-(checkdocs|black|cov|mypy|enabler), flake8-2020, paver
 Patch1:         0001-Remove-optional-or-unpackaged-test-deps.patch
+
+# Normally, setuptools < 60 defaults to "stdlib" distutils.
+# Python 3.12 removed the standard library distutils module.
+# In order to be able to use python-setuptools-wheel with Python 3.12,
+# we flip the default to "local", but only on Python 3.12+.
+Patch2:         0002-Default-to-local-distutils-on-Python-3.12.patch
 
 BuildArch:      noarch
 
@@ -208,6 +214,9 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Wed Nov 16 2022 Miro Hrončok <mhroncok@redhat.com> - 59.6.0-3
+- Make python-setuptools-wheel compatible with Python 3.12.0a2+
+
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 59.6.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
