@@ -1,16 +1,10 @@
 %global srcname setuptools
 
-# The original RHEL 9 content set is defined by (build)dependencies
-# of the packages in Fedora ELN. Hence we disable tests here
+# The original RHEL N+1 content set is defined by (build)dependencies
+# of the packages in Fedora ELN. Hence we disable tests and documentation here
 # to prevent pulling many unwanted packages in.
-# Once the RHEL 9 content set is defined and/or RHEL 9 forks from ELN,
-# the conditional can be removed from the Fedora spec file.
 # We intentionally keep this enabled on EPEL.
-%if 0%{?rhel} >= 9 && !0%{?epel}
-%bcond_with tests
-%else
-%bcond_without tests
-%endif
+%bcond tests %[%{defined fedora} || %{defined epel}]
 
 #  WARNING  When bootstrapping, disable tests as well,
 #           because tests need pip.
@@ -176,20 +170,26 @@ install -p %{_pyproject_wheeldir}/%{python_wheel_name} -t %{buildroot}%{python_w
 %endif
 
 
-%if %{with tests}
 %check
 # Verify bundled provides are up to date
 cat pkg_resources/_vendor/vendored.txt setuptools/_vendor/vendored.txt > allvendor.txt
 %{_rpmconfigdir}/pythonbundles.py allvendor.txt --namespace 'python%{python3_pkgversion}dist' --compare-with '%{bundled}'
 
+%if %{without bootstrap}
 # Regression test, the wheel should not be larger than 900 kB
 # https://bugzilla.redhat.com/show_bug.cgi?id=1914481#c3
 test $(stat --format %%s %{_pyproject_wheeldir}/%{python_wheel_name}) -lt 900000
+%endif
 
 # Regression test, the tests are not supposed to be installed
 test ! -d %{buildroot}%{python3_sitelib}/pkg_resources/tests
 test ! -d %{buildroot}%{python3_sitelib}/setuptools/tests
 
+%if %{without bootstrap}
+%pyproject_check_import
+%endif
+
+%if %{with tests}
 # https://github.com/pypa/setuptools/discussions/2607
 rm pyproject.toml
 
