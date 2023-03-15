@@ -150,7 +150,12 @@ rm -r docs/conf.py
 
 %install
 %if %{with bootstrap}
-%py3_install
+# The setup.py install command tries to import distutils
+# but the distutils-precedence.pth file is not yet respected
+# and Python 3.12+ no longer has distutils in the standard library.
+ln -s setuptools/_distutils distutils
+PYTHONPATH=$PWD %py3_install
+unlink distutils
 %else
 %pyproject_install
 %pyproject_save_files setuptools pkg_resources _distutils_hack
