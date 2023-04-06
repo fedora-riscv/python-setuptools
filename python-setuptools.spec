@@ -25,7 +25,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        62.6.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -50,6 +50,13 @@ Source1:        https://github.com/pypa/%{srcname}/archive/v%{version}/%{srcname
 
 # Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
 Patch:          Remove-optional-or-unpackaged-test-deps.patch
+
+# Security fix for CVE-2022-40897
+# Regular Expression Denial of Service (ReDoS) in package_index.py
+# Resolved upstream:
+# https://github.com/pypa/setuptools/commit/579134321d4d9397c886a5cb50cc26d0e3fa4279
+# https://github.com/pypa/setuptools/commit/43a9c9bfa6aa626ec2a22540bea28d2ca77964be
+Patch:          CVE-2022-40897.patch
 
 BuildArch:      noarch
 
@@ -235,6 +242,10 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
+* Wed Apr 19 2023 Charalampos Stratakis <cstratak@redhat.com> - 62.6.0-3
+- Security fix for CVE-2022-40897
+- Fixes: rhbz#2158677
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 62.6.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
