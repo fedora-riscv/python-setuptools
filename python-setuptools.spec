@@ -25,7 +25,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        59.6.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # appdirs is MIT
@@ -47,6 +47,13 @@ Patch1:         0001-Remove-optional-or-unpackaged-test-deps.patch
 # In order to be able to use python-setuptools-wheel with Python 3.12,
 # we flip the default to "local", but only on Python 3.12+.
 Patch2:         0002-Default-to-local-distutils-on-Python-3.12.patch
+
+# Security fix for CVE-2022-40897
+# Regular Expression Denial of Service (ReDoS) in package_index.py
+# Resolved upstream:
+# https://github.com/pypa/setuptools/commit/579134321d4d9397c886a5cb50cc26d0e3fa4279
+# https://github.com/pypa/setuptools/commit/43a9c9bfa6aa626ec2a22540bea28d2ca77964be
+Patch3:         0003-CVE-2022-40897.patch
 
 BuildArch:      noarch
 
@@ -214,6 +221,10 @@ PYTHONPATH=$(pwd) %pytest --ignore=setuptools/tests/test_integration.py --ignore
 
 
 %changelog
+* Thu Apr 06 2023 Charalampos Stratakis <cstratak@redhat.com> - 59.6.0-4
+- Security fix for CVE-2022-40897
+- Fixes: rhbz#2158677
+
 * Wed Nov 16 2022 Miro Hrončok <mhroncok@redhat.com> - 59.6.0-3
 - Make python-setuptools-wheel compatible with Python 3.12.0a2+
 
