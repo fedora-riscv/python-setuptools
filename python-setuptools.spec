@@ -43,7 +43,10 @@ Summary:        Easily build and distribute Python packages
 # the setuptools logo is MIT
 License:        MIT and ASL 2.0 and (BSD or ASL 2.0) and Python
 URL:            https://pypi.python.org/pypi/%{srcname}
+# We require the sdist from PyPI to build the package and the
+# github tarball only for the bootstrap.egg-info directory.
 Source0:        %{pypi_source %{srcname} %{version}}
+Source1:        https://github.com/pypa/%{srcname}/archive/v%{version}/%{srcname}-%{version}-github.tar.gz
 
 # Some test deps are optional and either not desired or not available in Fedora, thus this patch removes them.
 Patch:          Remove-optional-or-unpackaged-test-deps.patch
@@ -129,12 +132,13 @@ A Python wheel of setuptools to use with venv.
 
 %prep
 %autosetup -p1 -n %{srcname}-%{version}
-%if %{without bootstrap}
-# If we don't have setuptools installed yet, we use the pre-generated .egg-info
-# See https://github.com/pypa/setuptools/pull/2543
-# And https://github.com/pypa/setuptools/issues/2550
+# Removing the egg-info directory breaks the build since Python 3.11.1,
+# but we workaround the issue by utilizing the bootstrap.egg-info
+# directory from the github tarball.
+#          see https://github.com/pypa/setuptools/issues/3761
 rm -r %{srcname}.egg-info
-%endif
+# Extract the bootstrap.egg-info from the github tarball
+tar -xzf %{SOURCE1} --strip=1 setuptools-%{version}/bootstrap.egg-info
 
 # Strip shbang
 find setuptools pkg_resources -name \*.py | xargs sed -i -e '1 {/^#!\//d}'
