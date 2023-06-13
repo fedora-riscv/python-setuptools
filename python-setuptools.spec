@@ -20,7 +20,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        67.7.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # platformdirs is MIT
@@ -231,7 +231,7 @@ PYTHONPATH=$(pwd) %pytest \
 
 
 %changelog
-* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 67.7.2-3
+* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 67.7.2-4
 - Bootstrap for Python 3.12
 
 * Fri May 05 2023 Miro Hrončok <mhroncok@redhat.com> - 67.7.2-2
