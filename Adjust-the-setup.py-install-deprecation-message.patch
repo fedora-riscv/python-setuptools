@@ -1,6 +1,6 @@
-From 797316bb195387962758faaf85d6c453832ae61d Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
-Date: Fri, 5 May 2023 17:53:11 +0200
+From 58f33f0aef5b137287e6f425b922a03123735a77 Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Wed, 20 Sep 2023 17:18:47 +0200
 Subject: [PATCH] Adjust the setup.py install deprecation message and URL
 
 But only when building RPM packages.
@@ -9,7 +9,7 @@ But only when building RPM packages.
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/setuptools/command/install.py b/setuptools/command/install.py
-index dec4e32..704a317 100644
+index 606cce9..0af1631 100644
 --- a/setuptools/command/install.py
 +++ b/setuptools/command/install.py
 @@ -1,6 +1,7 @@
@@ -20,10 +20,10 @@ index dec4e32..704a317 100644
  import platform
  import distutils.command.install as orig
  
-@@ -36,8 +37,13 @@ class install(orig.install):
+@@ -40,8 +41,13 @@ class install(orig.install):
              Please avoid running ``setup.py`` directly.
-             Instead, use pypa/build, pypa/installer, pypa/build or
-             other standards-based tools.
+             Instead, use pypa/build, pypa/installer or other
+             standards-based tools.
 -            """,
 -            see_url="https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html",
 +            """
@@ -37,5 +37,5 @@ index dec4e32..704a317 100644
              #       (e.g. by unziping the wheel file)
              #       and then add a due_date to this warning.
 -- 
-2.40.0
+2.41.0
 
