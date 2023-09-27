@@ -16,9 +16,6 @@
     - smoke36:
         dir: python/smoke
         run: VERSION=3.6 ./venv.sh
-    - smoke37:
-        dir: python/smoke
-        run: VERSION=3.7 ./venv.sh
     - smoke38:
         dir: python/smoke
         run: VERSION=3.8 ./venv.sh
@@ -40,9 +37,6 @@
     - smoke36_virtualenv:
         dir: python/smoke
         run: VERSION=3.6 METHOD=virtualenv ./venv.sh
-    - smoke37_virtualenv:
-        dir: python/smoke
-        run: VERSION=3.7 METHOD=virtualenv ./venv.sh
     - smoke38_virtualenv:
         dir: python/smoke
         run: VERSION=3.8 METHOD=virtualenv ./venv.sh
@@ -66,7 +60,6 @@
     - virtualenv
     - python2.7
     - python3.6
-    - python3.7
     - python3.8
     - python3.9
     - python3.10-devel
