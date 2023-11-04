@@ -1,7 +1,7 @@
 %global srcname setuptools
 
 # used when bootstrapping new Python versions
-%bcond bootstrap 0
+%bcond bootstrap 1
 
 # Similar to what we have in pythonX.Y.spec files.
 # If enabled, provides unversioned executables and other stuff.
@@ -19,7 +19,7 @@
 Name:           python-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        67.7.2
-Release:        7%{?dist}
+Release:        7.rv64%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # platformdirs is MIT
@@ -120,7 +120,7 @@ have dependencies on other packages.
 This package also contains the runtime components of setuptools, necessary to
 execute the software that requires pkg_resources.
 
-%if %{without bootstrap}
+%if %{with bootstrap}
 %package -n     %{python_wheel_pkg_prefix}-%{srcname}-wheel
 Summary:        The setuptools wheel
 %{bundled}
